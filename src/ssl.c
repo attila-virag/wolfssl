@@ -27934,6 +27934,89 @@ byte* wolfSSL_get_chain_cert(WOLFSSL_X509_CHAIN* chain, int idx)
     return 0;
 }
 
+#ifdef WOLFSSL_SEP
+
+static int GetBoolean(const byte* input, word32* inOutIdx, word32 maxIdx)
+{
+  word32 idx = *inOutIdx;
+  byte   b;
+
+  if ((idx + 3) > maxIdx)
+    return BUFFER_E;
+
+  b = input[idx++];
+  if (b != ASN_BOOLEAN)
+    return ASN_PARSE_E;
+
+  if (input[idx++] != 1)
+    return ASN_PARSE_E;
+
+  b = input[idx++] != 0;
+
+  *inOutIdx = idx;
+  return b;
+}
+
+int wolfSSL_check_ext_policy_mapping(WOLFSSL_X509* cert)
+{
+  if (0 != cert->extCertPolicyMapping) {
+    return -1;
+  }
+  return 0;
+}
+
+int wolfSSL_check_ext_name_constraints(WOLFSSL_X509* cert)
+{
+  if (0 != cert->extNameConstraintSet) {
+    return -1;
+  }
+  return 0;
+}
+
+int wolfSSL_is_cert_sep2_compliant(WOLFSSL_X509_CHAIN* chain, int idx)
+{
+  DecodedCert  cert[1];
+  int          ret;
+
+  X509* x509 = NULL;
+  x509 = wolfSSL_get_chain_X509(chain, idx);
+  if (NULL == x509) {
+    return -1;
+  }
+
+  ret = 0;
+  InitDecodedCert(cert, chain->certs[idx].buffer,
+    chain->certs[idx].length, NULL);
+
+  if ((ret = ParseCertRelative(cert, CERT_TYPE, 0, NULL)) != 0) {
+    WOLFSSL_MSG("Failed to parse cert");
+  }
+
+  // check critical extended key usage
+  if (0 != cert->extExtKeyUsageCrit) {
+    ret = -1;
+    FreeDecodedCert(cert);
+    return ret;
+  }
+
+  if (0 != wolfSSL_check_ext_name_constraints(x509)) {
+    ret = -2;
+    FreeDecodedCert(cert);
+    return ret;
+  }
+
+
+  if (0 != wolfSSL_check_ext_policy_mapping(x509)) {
+    ret = -3;
+    FreeDecodedCert(cert);
+    return ret;
+  }
+
+  FreeDecodedCert(cert);
+  return ret;
+}
+
+#endif
 
 /* Get peer's wolfSSL X509 certificate at index (idx) */
 WOLFSSL_X509* wolfSSL_get_chain_X509(WOLFSSL_X509_CHAIN* chain, int idx)

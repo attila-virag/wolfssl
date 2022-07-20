@@ -1790,6 +1790,8 @@ struct DecodedCert {
     byte selfSigned : 1;           /* Indicates subject and issuer are same */
 #if defined(WOLFSSL_SEP) || defined(WOLFSSL_QT)
     byte extCertPolicySet : 1;
+    byte extCertPolicyMapping : 1;
+    byte extNameConstraint : 1;
 #endif
     byte extCRLdistCrit : 1;
     byte extAuthInfoCrit : 1;

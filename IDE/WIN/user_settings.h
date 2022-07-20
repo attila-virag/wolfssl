@@ -47,6 +47,23 @@
         #define ECC_SHAMIR
         #define ECC_TIMING_RESISTANT
 
+        #define SESSION_CERTS
+        #define KEEP_PEER_CERT
+
+        #define WOLFSSL_ALWAYS_VERIFY_CB
+        #define WOLFSSL_SEP
+        #define WOLFSSL_CERT_EXT
+        #define WOLFSSL_CERT_GEN
+        #define OPENSSL_ALL
+        
+
+        // custom ciphers
+        #define BUILD_TLS_RSA_WITH_AES_256_CBC_SHA256 // for PG&E F5
+        #define BUILD_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 // for L+G GSIS
+
+
+// 
+
         /* Optional Performance Speedups */
         #if 0
             /* AESNI on x64 */

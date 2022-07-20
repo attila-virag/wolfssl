@@ -11482,6 +11482,9 @@ int CopyDecodedToX509(WOLFSSL_X509* x509, DecodedCert* dCert)
     #if defined(WOLFSSL_SEP) || defined(WOLFSSL_QT)
         x509->certPolicySet = dCert->extCertPolicySet;
         x509->certPolicyCrit = dCert->extCertPolicyCrit;
+        x509->extCertPolicyMapping = dCert->extCertPolicyMapping;
+        x509->extNameConstraintSet = dCert->extNameConstraintSet;
+
     #endif /* WOLFSSL_SEP || WOLFSSL_QT */
     #ifdef WOLFSSL_CERT_EXT
         {
@@ -13773,6 +13776,34 @@ int ProcessPeerCerts(WOLFSSL* ssl, byte* input, word32* inOutIdx,
                     default:
                         break;
                 }
+
+#ifdef WOLFSSL_SEP
+
+                // check for name constrains extension
+                if (0 != args->dCert->extCertPolicyMapping) {
+                  args->fatal = 1;
+                }
+
+                ////check for policy
+                //if (0 != args->dCert->extc) {
+                //  args->fatal = 1;
+                //}
+
+                ////check critical key extension
+                //if (0 != args->dCert->extKeyUsageCrit) {
+                //  args->fatal = 1;
+                //}
+
+
+                if (args->fatal) {
+                  ssl->error = ret;
+#if defined(OPENSSL_EXTRA) || defined(OPENSSL_EXTRA_X509_SMALL)
+                  SendAlert(ssl, alert_fatal, bad_certificate);
+                  ssl->peerVerifyRet = X509_V_ERR_CERT_REJECTED;
+#endif
+                  goto exit_ppc;
+                }
+#endif
 
                 /* args->dCert free'd in function cleanup after callback */
             } /* if (count > 0) */

@@ -17583,6 +17583,15 @@ static int DecodeExtensionType(const byte* input, int length, word32 oid,
             }
             break;
         #endif /* IGNORE_NAME_CONSTRAINTS */
+#ifdef WOLFSSL_SEP
+
+        case  POLICY_MAP_OID:
+          VERIFY_AND_SET_OID(cert->extCertPolicyMapping);
+          // TODO check if additional code is needed here, in the QL tester this extention was always the last one
+          // but we may need to parse it out to be able to move to the next one if needed
+          break;
+
+#endif
 
         /* Inhibit anyPolicy. */
         case INHIBIT_ANY_OID:

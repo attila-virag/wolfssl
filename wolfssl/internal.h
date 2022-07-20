@@ -4168,6 +4168,13 @@ struct WOLFSSL_X509 {
     byte             authKeyIdSet:1;
     byte             authKeyIdCrit:1;
     byte             issuerSet:1;
+
+#ifdef WOLFSSL_SEP
+
+    byte            extCertPolicyMapping : 1;
+    byte            extNameConstraintSet : 1;
+
+#endif
 #endif /* OPENSSL_EXTRA || OPENSSL_EXTRA_X509_SMALL */
 #ifdef WOLFSSL_CERT_REQ
     byte             isCSR:1;

@@ -2744,6 +2744,17 @@ WOLFSSL_API int  wolfSSL_get_chain_length(WOLFSSL_X509_CHAIN* chain, int idx);
 WOLFSSL_API unsigned char* wolfSSL_get_chain_cert(WOLFSSL_X509_CHAIN* chain, int idx);
 /* index cert in X509 */
 WOLFSSL_API WOLFSSL_X509* wolfSSL_get_chain_X509(WOLFSSL_X509_CHAIN* chain, int idx);
+// check ceritficate compliance according to SEP2, 0 means compliant
+#ifdef WOLFSSL_SEP
+
+WOLFSSL_API int wolfSSL_is_cert_sep2_compliant(WOLFSSL_X509_CHAIN* chain, int idx);
+
+WOLFSSL_API int wolfSSL_check_ext_policy_mapping(WOLFSSL_X509* cert);
+
+WOLFSSL_API int wolfSSL_check_ext_name_constraints(WOLFSSL_X509* cert);
+
+#endif
+
 /* free X509 */
 #define wolfSSL_FreeX509(x509) wolfSSL_X509_free((x509))
 WOLFSSL_ABI WOLFSSL_API void wolfSSL_X509_free(WOLFSSL_X509* x509);
