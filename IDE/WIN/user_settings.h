@@ -31,12 +31,15 @@
         /* The lib */
         #define OPENSSL_EXTRA
         #define WOLFSSL_RIPEMD
-        #define NO_PSK
+        //#define NO_PSK
         #define HAVE_EXTENDED_MASTER
         #define WOLFSSL_SNIFFER
         #define HAVE_SECURE_RENEGOTIATION
 
         #define HAVE_AESGCM
+        #define HAVE_AESCCM
+        #define WC_NO_HARDEN
+        #define WOLFSSL_AES_128
         #define WOLFSSL_SHA384
         #define WOLFSSL_SHA512
 
@@ -49,18 +52,19 @@
 
         #define SESSION_CERTS
         #define KEEP_PEER_CERT
+        #define  WOLFSSL_STATIC_PSK
 
         #define WOLFSSL_ALWAYS_VERIFY_CB
         #define WOLFSSL_SEP
         #define WOLFSSL_CERT_EXT
         #define WOLFSSL_CERT_GEN
         #define OPENSSL_ALL
-        
 
         // custom ciphers
         #define BUILD_TLS_RSA_WITH_AES_256_CBC_SHA256 // for PG&E F5
         #define BUILD_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 // for L+G GSIS
-
+        #define BUILD_TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 // for L+G GSIS
+        #define BUILD_TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8 // SEP2 main cipher
 
 // 
 
@@ -92,9 +96,7 @@
         #endif
 
     #else
-        /* The servers and clients */
-        #define OPENSSL_EXTRA
-        #define NO_PSK
+
     #endif
 #endif /* HAVE_FIPS */
 
